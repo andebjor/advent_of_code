@@ -6,6 +6,13 @@
 #include <cassert>
 
 
+typedef enum
+{
+    NEXT = 0,
+    HALFWAY = 1
+} skip_def;
+
+
 const std::string read_file(const std::string &f_name)
 {
     std::ifstream f(f_name);
@@ -42,13 +49,34 @@ T get_next_circular(size_t i, const std::vector<T> &array)
 
 
 template<typename T>
-T count_repeated(const std::vector<T> &array)
+T get_mirror_circular(size_t i, const std::vector<T> &array)
+{
+    assert(i < array.size());
+
+    return array[(i + array.size()/2)%array.size()];
+}
+
+
+template<typename T>
+T count_repeated(const std::vector<T> &array, skip_def skip)
 {
     T sum = 0;
     for (size_t i=0; i<array.size(); i++)
     {
         const T &c_val = array[i];
-        const T &n_val = get_next_circular(i, array);
+              T  n_val;
+        if (skip == NEXT)
+        {
+            n_val = get_next_circular(i, array);
+        }
+        else if (skip == HALFWAY)
+        {
+            n_val = get_mirror_circular(i, array);
+        }
+        else
+        {
+            assert(false);
+        }
 
         if (c_val == n_val)
         {
@@ -65,9 +93,11 @@ int main(void)
     const std::string digits     = read_file("../input/digits.dat");
     const std::vector<int> array = convert_to_array(digits);
 
-    int sum = count_repeated(array);
+    int sum_1 = count_repeated(array, NEXT);
+    std::cout << "Answer to part 1 is: " << sum_1 << '\n';
 
-    std::cout << "Answer is: " << sum << '\n';
+    int sum_2 = count_repeated(array, HALFWAY);
+    std::cout << "Answer to part 2 is: " << sum_2 << '\n';
 
     return 0;
 }
