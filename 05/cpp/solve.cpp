@@ -59,7 +59,7 @@ const std::vector<int> convert_to_int_array(const std::string &str)
 }
 
 
-uint64_t jumps_until_out(const std::vector<int> &array)
+uint64_t jumps_until_out(const std::vector<int> &array, bool rule1)
 {
     auto     jump_vec(array);
     int      pos     = 0;
@@ -67,7 +67,22 @@ uint64_t jumps_until_out(const std::vector<int> &array)
 
     do
     {
-        pos += jump_vec[pos]++;
+        if (rule1)
+        {
+            pos += jump_vec[pos]++;
+        }
+        else
+        {
+            if (jump_vec[pos] >= 3)
+            {
+                pos += jump_vec[pos]--;
+            }
+            else
+            {
+                pos += jump_vec[pos]++;
+            }
+        }
+
         n_jumps++;
     } while (pos >= 0 && pos < jump_vec.size());
 
@@ -80,8 +95,11 @@ int main(void)
     const auto file_string = read_file("../input/jumplist.dat");
     const auto array       = convert_to_int_array(file_string);
 
-    const auto n_jumps = jumps_until_out(array);
+    auto n_jumps = jumps_until_out(array, true);
     std::cout << "Answer to part 1 is: " << n_jumps << '\n';
+
+    n_jumps = jumps_until_out(array, false);
+    std::cout << "Answer to part 2 is: " << n_jumps << '\n';
 
     return 0;
 }
