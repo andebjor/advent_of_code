@@ -1,13 +1,7 @@
+#include "solve.h"
+#include "strange_mem.h"
+
 #include <iostream>
-#include <cassert>
-
-
-typedef struct
-{
-    uint64_t layer;
-    uint64_t start;
-    uint64_t end;
-} layer_info;
 
 
 layer_info get_layer(uint64_t location)
@@ -28,20 +22,20 @@ layer_info get_layer(uint64_t location)
 }
 
 
-uint64_t get_side_start(uint64_t location, const layer_info &li)
+std::pair<int,uint64_t> get_side_start(uint64_t location, const layer_info &li)
 {
     auto per_side = 2*li.layer;
 
     unsigned int side = 0;
     auto side_start = li.start;
-    while (side_start + per_side < location)
+    while (side_start + per_side <= location)
     {
         side++;
         side_start += per_side;
     }
     assert(side < 4);
 
-    return side_start;
+    return std::pair<int, uint64_t>(side, side_start);
 }
 
 
@@ -54,7 +48,7 @@ uint64_t get_num_steps(uint64_t location)
     auto num_steps = li.layer; // the long part
 
     // calculate the short part
-    auto rest = location - side_start;
+    auto rest = location - side_start.second;
     auto steps_to_middle = li.layer - 1;
     if (rest < steps_to_middle)
     {
@@ -69,11 +63,22 @@ uint64_t get_num_steps(uint64_t location)
 }
 
 
+uint64_t get_first_larger(uint64_t value)
+{
+    Strange_memory<uint64_t> mem(10);
+
+    return mem.fill_until_larger(value);
+}
+
+
 int main(void)
 {
-    auto num_steps = get_num_steps(277678);
+    uint64_t input = 277678;
+    auto num_steps = get_num_steps(input);
     std::cout << "Answer to part 1 is: " << num_steps << '\n';
+
+    int larger = get_first_larger(input);
+    std::cout << "Answer to part 2 is: " << larger << '\n';
 
     return 0;
 }
-
