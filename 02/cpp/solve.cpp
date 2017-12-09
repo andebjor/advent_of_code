@@ -4,6 +4,7 @@
 #include <vector>
 #include <iostream>
 #include <limits>
+#include <cassert>
 
 
 std::string read_file(const std::string &f_name)
@@ -101,6 +102,48 @@ T get_checksum(const std::vector<std::vector<T>> &spreadsheet)
 }
 
 
+template<typename T>
+std::pair<T,T> get_divisors(const std::vector<T> array)
+{
+    // loop over array, in inner and outer loop
+    // outer is for numerator
+    // inner is for denominator
+
+    for (size_t i_n=0; i_n<array.size(); i_n++)
+    {
+        for (size_t i_d=0; i_d<array.size(); i_d++)
+        {
+            // we cant divide with our self...
+            if (i_n == i_d)
+            {
+                continue;
+            }
+
+            if (array[i_n]%array[i_d] == 0)
+            {
+                return std::pair<T,T>(array[i_n], array[i_d]);
+            }
+        }
+    }
+
+    assert(false);
+}
+
+
+template<typename T>
+T get_div_sum(const std::vector<std::vector<T>> &spreadsheet)
+{
+    T sum = 0;
+    for (size_t i_row=0; i_row<spreadsheet.size(); i_row++)
+    {
+        std::pair<T,T> divisors = get_divisors(spreadsheet[i_row]);
+        sum += divisors.first/divisors.second;
+    }
+
+    return sum;
+}
+
+
 int main(void)
 {
     const std::string file_string                   = read_file("../input/spreadsheet.dat");
@@ -108,6 +151,9 @@ int main(void)
 
     int checksum = get_checksum(spreadsheet);
     std::cout << "Answer to part 1 is: " << checksum << '\n';
+
+    int div_sum = get_div_sum(spreadsheet);
+    std::cout << "Answer to part 2 is: " << div_sum << '\n';
 
     return 0;
 }
