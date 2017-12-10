@@ -24,6 +24,30 @@ void Hasher<T>::Apply(size_t length)
     list.Set(position, sublist);
 
     position += length + skip_size++;
+
+    position  %= list.size();
+    skip_size %= list.size();
+}
+
+
+template<typename T>
+std::vector<T> Hasher<T>::get_dense_hash() const
+{
+    std::vector<T> ret;
+    ret.reserve(16);
+
+    for (size_t i=0; i<16; i++)
+    {
+        T hsh = list.Get(i*16);
+        for (size_t j=1; j<16; j++)
+        {
+            hsh ^= list.Get(i*16 + j);
+        }
+
+        ret.push_back(hsh);
+    }
+
+    return ret;
 }
 
 

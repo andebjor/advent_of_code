@@ -14,6 +14,8 @@ class Hasher
 
         void Apply(size_t length);
 
+        std::vector<T> get_dense_hash() const;
+
     private:
         Circular_list<T> list;
         size_t position;
