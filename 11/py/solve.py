@@ -56,16 +56,43 @@ def optmize(steps):
             steps['s'] += steps['sw']
             steps ['sw'] = 0
 
+    if steps['nw'] > 0 and steps['ne'] > 0:
+        if steps['nw'] > steps['ne']:
+            steps['nw'] -= steps['ne']
+            steps['n'] += steps['ne']
+            steps ['ne'] = 0
+        else:
+            steps['ne'] -= steps['nw']
+            steps['n'] += steps['nw']
+            steps ['nw'] = 0
+
 
     return steps
+
+
+def get_length(steps):
+    sum = 0;
+    for k in steps.keys():
+        sum += steps[k]
+
+    return sum
 
 
 def main():
     coords = read_input('../input/coords.dat')
     steps = categorize(coords)
-    steps = optmize(steps)
+    steps_o = optmize(steps)
 
-    print('Answer 1: %s' % str(steps['sw'] + steps['s']))
+    print('Answer 1: %s' % get_length(steps_o))
+
+    max_len = 0
+    for i in range(get_length(steps_o), len(coords)):
+        steps_o = optmize(categorize(coords[:i]))
+        length = get_length(steps_o)
+        if length > max_len:
+            max_len = length
+
+    print('Answer 2: %s' % max_len)
 
     return True
 
