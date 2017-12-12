@@ -43,8 +43,6 @@ def get_reach(conn, from_ind):
     return can_reach
 
 
-
-
 def main():
     pipe_lines = read_input_lines('../input/pipes.dat')
     pipe_connections = categorize(pipe_lines)
@@ -52,6 +50,18 @@ def main():
     reach = get_reach(pipe_connections, 0)
 
     print('Answer 1: %s' % len(reach.keys()))
+
+    n_groups = 1
+    left = list(set(range(len(pipe_lines))) - set(reach.keys()))
+    while True:
+        reach = get_reach(pipe_connections, left[0])
+        left = list(set(left) - set(reach))
+
+        n_groups += 1
+        if len(left) == 0:
+            break
+
+    print('Answer 2: %s' % n_groups)
 
     return True
 
