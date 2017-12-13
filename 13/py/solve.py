@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 
-import re
+import copy
 import sys
 
 
@@ -53,7 +53,6 @@ class Firewall():
     def get_depth(self, i):
         if self.layers[i] is not None:
             return self.layers[i].depth
-        print('oops')
         return 0
 
     def _resize_if_needed(self, max_ind):
@@ -79,26 +78,44 @@ def configure_firewall(lines):
     return firewall
 
 
-def solve_1(firewall):
+def solve_1(firewall, abort_on_catch=False):
     severity = 0
 
     for l in range(firewall.get_length()):
         if firewall.catches(l):
-            print('catch at %d' % l)
-            print('depth %d' % firewall.get_depth(l))
             severity += l*firewall.get_depth(l)
+            if abort_on_catch:
+                return severity
 
         firewall.update()
 
     return severity
 
 
-def main():
-    fireall_lines = read_input_lines('../input/firewall.dat')
-    firewall = configure_firewall(fireall_lines)
+def solve_2(firewall):
+    delay = 0
+    while True:
+        if not firewall.catches(0):
+            severity = solve_1(copy.deepcopy(firewall), abort_on_catch=True)
+            if severity == 0:
+                return delay
 
-    severity = solve_1(firewall)
+        delay += 1
+        firewall.update()
+
+        if delay%100 == 0:
+            print(delay)
+
+
+def main():
+    firewall_lines = read_input_lines('../input/firewall.dat')
+    firewall = configure_firewall(firewall_lines)
+
+    severity = solve_1(copy.deepcopy(firewall))
     print('Answer 1: %d' % severity)
+
+    delay = solve_2(copy.deepcopy(firewall))
+    print('Answer 2: %d' % delay)
 
     return True
 
