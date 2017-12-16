@@ -28,17 +28,25 @@ def solve_1(banks):
     seen = []
     while True:
         if mem.banks in seen:
-            return len(seen)
+            return (len(seen), seen, mem.banks)
 
         seen.append(mem.banks[:])
 
         mem.reallocate()
 
 
+def solve_2(banks, repeated):
+    ind = banks.index(repeated)
+    return len(banks) - ind
+
+
 def main():
     banks = read_input('../input/banks.dat')
 
-    print("Answer 1: %d" % solve_1(banks))
+    (n_cycles, seen, repeated) = solve_1(banks)
+    print("Answer 1: %d" % n_cycles)
+
+    print("Answer 2: %d" % solve_2(seen, repeated))
 
     return True
 
