@@ -91,10 +91,29 @@ def solve_1(actions):
     return dance.as_str()
 
 
+def solve_2(actions):
+    dance = Dance(16)
+    reps = 1000000000
+
+    seen = []
+    for i in range(reps):
+        if dance.as_str() in seen:
+            return seen[reps%i]
+
+        seen.append(dance.as_str())
+
+        for a in actions:
+            dance.make_move(a)
+
+    return dance.as_str()
+
+
 def main():
     actions = read_actions('../input/dance.dat')
 
     print("Answer 1: '%s'" % solve_1(actions))
+
+    print("Answer 2: '%s'" % solve_2(actions))
 
     return True
 
