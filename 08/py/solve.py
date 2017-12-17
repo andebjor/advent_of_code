@@ -3,6 +3,7 @@
 import re
 import sys
 
+
 class Instruction:
     def __init__(self, str_instruction):
         m = re.match(r'(\w+) (inc|dec) ([-0-9]+) if ([\w]+) ([<>=!]+) ([-0-9]+)', str_instruction)
@@ -50,10 +51,10 @@ class Instruction:
                                                 self._check_value)
 
 
-
 class Register:
     def __init__(self):
         self._reg = {}
+        self._max = 0
 
     def get(self, key):
         if key not in self._reg.keys():
@@ -67,8 +68,14 @@ class Register:
 
         self._reg[key] += val
 
+        if self.get_max() > self._max:
+            self._max = self.get_max()
+
     def get_max(self):
         return max(self._reg.values())
+
+    def get_all_time_max(self):
+        return self._max
 
     def __str__(self):
         return str(self._reg)
@@ -88,9 +95,7 @@ def read_input(fname):
         return f.read().splitlines()
 
 
-def solve_1(instructions):
-    reg = Register()
-
+def solve_1(instructions, reg):
     for i in instructions:
         i.apply(reg)
 
@@ -101,7 +106,10 @@ def main():
     str_instructions = read_input('../input/instructions.dat')
     instructions = decode_instructions(str_instructions)
 
-    print("Answer 1: %d" % solve_1(instructions))
+    reg = Register()
+    print("Answer 1: %d" % solve_1(instructions, reg))
+
+    print("Answer 2: %d" % reg.get_all_time_max())
 
     return True
 
