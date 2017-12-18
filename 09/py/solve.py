@@ -14,6 +14,7 @@ def solve_1(stream):
     depth = 0
     in_garbage = False
     i = 0
+    removed_garbage = 0
     while i < len(stream):
         if in_garbage:
             if stream[i] == '>':
@@ -25,6 +26,7 @@ def solve_1(stream):
                 i += 2
                 continue
 
+            removed_garbage += 1
             i += 1
             continue
 
@@ -49,14 +51,15 @@ def solve_1(stream):
 
         i += 1
 
-    return score
+    return score, removed_garbage
 
 
 def main():
     stream = read_input('../input/stream.dat')
 
-    score = solve_1(stream)
+    (score, removed_garbage) = solve_1(stream)
     print("Answer 1: %d" % score)
+    print("Answer 2: %d" % removed_garbage)
 
     return True
 
