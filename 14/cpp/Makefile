@@ -1,9 +1,9 @@
 bin:
 
-OPT_FLAGS := -O0
-# OPT_FLAGS := -O3
+# OPT_FLAGS := -O0
+OPT_FLAGS := -O3
 
-DEBUG_FLAGS := -g
+# DEBUG_FLAGS := -g
 
 CPPFLAGS := -std=c++14 -W -Wall -Wfatal-errors $(OPT_FLAGS) $(DEBUG_FLAGS)
 
